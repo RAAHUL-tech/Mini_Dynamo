@@ -2,7 +2,7 @@ from typing import Dict, List
 from read_repair import perform_read_repair
 from replication import ReplicationManager
 from quorum import Quorum
-from vector_clock import increment, compare, VCComparison
+from vector_clock import increment, compare, VCComparison, merge
 from storage import Storage
 from client_rpc import send_put, send_get
 from conflict_resolution import resolve_versions
@@ -33,7 +33,7 @@ class Coordinator:
         merged_vc = {}
 
         for v in existing_versions:
-            merged_vc = merged_vc or v["vector_clock"]
+            merged_vc = merge(merged_vc, v["vector_clock"])
 
         new_vc = increment(merged_vc, self.node_id)
 
