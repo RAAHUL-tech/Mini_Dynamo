@@ -1,4 +1,4 @@
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Tuple
 import time
 
 
@@ -22,11 +22,13 @@ class Quorum:
     def collect_read_quorum(
         responses: Dict[str, Any],
         required_r: int
-    ) -> List[Any]:
+    ) -> Tuple[List[Any], bool]:
         """
         responses: node -> read_result (list of versions)
         Collects from all nodes and flattens versions.
         Ensures at least R nodes responded (even if with empty lists).
+        
+        Returns: (all_versions, quorum_met)
         """
         all_versions = []
         responding_nodes = 0
@@ -41,10 +43,7 @@ class Quorum:
                     all_versions.append(value)
         
         # Check if we have at least R nodes that responded
-        if responding_nodes < required_r:
-            # Not enough nodes responded, but we still return what we have
-            # (the system should handle this gracefully)
-            pass
+        quorum_met = responding_nodes >= required_r
         
-        # Return all collected versions (collect all for read repair)
-        return all_versions
+        # Return all collected versions (collect all for read repair) and quorum status
+        return all_versions, quorum_met

@@ -296,21 +296,15 @@ Each node will:
 ### Write a Value
 
 ```bash
-curl -X PUT http://localhost:5001/kv/user123 \
+curl -X PUT localhost:5001/kv/test123 \
   -H "Content-Type: application/json" \
-  -d '{
-    "value": "Alice",
-    "N": 3,
-    "W": 2
-  }'
+  -d '{"value":"test","N":3,"W":2}'
 ```
 
 **Response:**
 ```json
 {
   "status": "success",
-  "key": "user123",
-  "replicas_written": 3
 }
 ```
 
@@ -319,16 +313,14 @@ curl -X PUT http://localhost:5001/kv/user123 \
 ### Read a Value
 
 ```bash
-curl -X GET http://localhost:5002/kv/user123 \
-  -H "Content-Type: application/json" \
-  -d '{"R": 2}'
+curl "localhost:5002/kv/test123?R=2"
 ```
 
 **Response (no conflicts):**
 ```json
 {
   "status": "success",
-  "value": "Alice",
+  "value": "test",
   "vector_clock": {
     "node_5001": 1,
     "node_5002": 1

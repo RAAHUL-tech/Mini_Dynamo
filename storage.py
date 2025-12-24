@@ -27,9 +27,24 @@ class Storage:
 
             self.store[key].append(versioned_value)
 
-    def get(self, key: str) -> List[dict]:
+    def get(self, key: str, include_tombstones: bool = False) -> List[dict]:
         """
-        Return all versions for a key
+        Return all versions for a key.
+        Filters out tombstones (deleted markers) by default.
+        
+        Args:
+            include_tombstones: If True, returns all versions including tombstones
+        """
+        with self.lock:
+            versions = list(self.store.get(key, []))
+            if include_tombstones:
+                return versions
+            # Filter out tombstones for normal reads
+            return [v for v in versions if not v.get("deleted", False)]
+    
+    def get_all(self, key: str) -> List[dict]:
+        """
+        Return all versions including tombstones (for internal operations).
         """
         with self.lock:
             return list(self.store.get(key, []))

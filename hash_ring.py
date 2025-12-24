@@ -1,6 +1,7 @@
 import hashlib
 import bisect
 from typing import List, Dict
+from config import DEFAULT_VNODES
 
 
 class HashRing:
@@ -8,7 +9,7 @@ class HashRing:
     Consistent Hash Ring with Virtual Nodes
     """
 
-    def __init__(self, nodes: List[str], vnodes: int = 100):
+    def __init__(self, nodes: List[str], vnodes: int = DEFAULT_VNODES):
         """
         nodes  : list of physical node identifiers (e.g. "127.0.0.1:5001")
         vnodes : number of virtual nodes per physical node
